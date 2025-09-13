@@ -1,38 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ip17pm from '../images/ip17pmSD.png';
 import ipad from '../images/IpadSD.png';
 import macbook from '../images/MacM4SD.png';
 
 const Slideshow = () => {
-  const slides = [
-    `${ip17pm}`,
-    `${ipad}`,
-    `${macbook}`,
-  ];
+  const slides = [ip17pm, ipad, macbook];
   const [currentSlide, setCurrentSlide] = useState(0);
+  const slideRef = useRef(null);
+  const startX = useRef(null);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  const goToSlide = (index) => setCurrentSlide(index);
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
-
-  const goToSlide = (index) => {
-    setCurrentSlide(index);
-  };
-
+  // Auto-slide
   useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 5000); // Auto-slide every 5 seconds
+    const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
   }, []);
 
+  // Mouse/touch drag handlers
+  const handleMouseDown = (e) => {
+    startX.current = e.clientX;
+  };
+
+  const handleMouseUp = (e) => {
+    if (startX.current === null) return;
+    const diff = e.clientX - startX.current;
+    if (diff > 50) prevSlide();
+    else if (diff < -50) nextSlide();
+    startX.current = null;
+  };
+
+  const handleTouchStart = (e) => {
+    startX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (startX.current === null) return;
+    const diff = e.changedTouches[0].clientX - startX.current;
+    if (diff > 50) prevSlide();
+    else if (diff < -50) nextSlide();
+    startX.current = null;
+  };
+
   return (
-    <div className="relative w-full" data-carousel="slide">
-      <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
+    <div
+      className="relative w-full"
+      data-carousel="slide"
+      ref={slideRef}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      style={{ userSelect: 'none' }}
+    >
+      <div className="relative w-full h-[40vw] max-h-[500px] min-h-[200px] overflow-hidden rounded-lg flex items-center justify-center bg-black">
         {slides.map((slide, index) => (
           <div
             key={index}
@@ -43,8 +66,9 @@ const Slideshow = () => {
           >
             <img
               src={slide}
-              className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+              className="block w-full h-full object-contain"
               alt={`Slide ${index + 1}`}
+              draggable={false}
             />
           </div>
         ))}
@@ -65,7 +89,7 @@ const Slideshow = () => {
       </div>
       <button
         type="button"
-        className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+        className="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
         onClick={prevSlide}
         data-carousel-prev
       >
@@ -90,7 +114,7 @@ const Slideshow = () => {
       </button>
       <button
         type="button"
-        className="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+        className="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
         onClick={nextSlide}
         data-carousel-next
       >
