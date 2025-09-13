@@ -56,22 +56,24 @@ const Slideshow = () => {
       style={{ userSelect: 'none' }}
     >
       <div className="relative w-full h-[40vw] max-h-[500px] min-h-[200px] overflow-hidden rounded-lg flex items-center justify-center bg-black">
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute w-full h-full transition-opacity duration-700 ease-in-out ${
-              index === currentSlide ? 'block opacity-100' : 'hidden opacity-0'
-            }`}
-            data-carousel-item
-          >
-            <img
-              src={slide}
-              className="block w-full h-full"
-              alt={`Slide ${index + 1}`}
-              draggable={false}
-            />
-          </div>
-        ))}
+        <div
+          className="flex w-full h-full transition-transform duration-700 ease-in-out"
+          style={{
+            transform: `translateX(-${currentSlide * 100}%)`,
+            width: `${slides.length * 100}%`,
+          }}
+        >
+          {slides.map((slide, index) => (
+            <div key={index} className="w-full h-full flex-shrink-0 flex items-center justify-center">
+              <img
+                src={slide}
+                className="block w-full h-full object-contain"
+                alt={`Slide ${index + 1}`}
+                draggable={false}
+              />
+            </div>
+          ))}
+        </div>
       </div>
       <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
         {slides.map((_, index) => (
