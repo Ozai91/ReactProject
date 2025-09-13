@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import React from 'react'
 import ip17pm from '../images/ip17pmSD.png';
 import ipad from '../images/IpadSD.png';
 import macbook from '../images/MacM4SD.png';
