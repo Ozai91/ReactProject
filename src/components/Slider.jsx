@@ -66,7 +66,7 @@ const Slideshow = () => {
           >
             <img
               src={slide}
-              className="block w-full h-full object-contain"
+              className="block w-full h-full"
               alt={`Slide ${index + 1}`}
               draggable={false}
             />
