@@ -56,7 +56,7 @@ const Slideshow = () => {
       onTouchEnd={handleTouchEnd}
       style={{ userSelect: 'none' }}
     >
-      <div className="relative w-full h-[40vw] max-h-[500px] min-h-[200px] overflow-hidden rounded-lg flex items-center justify-center bg-black">
+      <div className="relative w-full h-[40vw] max-h-[500px] min-h-[200px] overflow-hidden  flex items-center justify-center bg-black">
         <div
           className="flex w-full h-full transition-transform duration-700 ease-in-out"
           style={{
