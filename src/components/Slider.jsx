@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import ip17pm from '../images/ip17pmSD.png';
 import ipad from '../images/IpadSD.png';
 import macbook from '../images/MacM4SD.png';
+import iwatch from '../images/IwatchUltraSD.png';
 
 const Slideshow = () => {
-  const slides = [ip17pm, ipad, macbook];
+  const slides = [ip17pm, ipad, macbook , iwatch];
   const [currentSlide, setCurrentSlide] = useState(0);
   const slideRef = useRef(null);
   const startX = useRef(null);
