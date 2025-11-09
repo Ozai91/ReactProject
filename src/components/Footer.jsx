@@ -1,4 +1,5 @@
 import React from 'react'
+import ifive from '../images/ifiveNO_BG.png';
 
 const Footer = () => {
   return (
@@ -8,9 +9,12 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* iOne Section */}
         <div>
-          <img src="path-to-iOne-logo.png" alt="iOne Logo" className="h-8 mb-4" />
+          <img src={ifive} alt="BIU" className="h-8 mb-4" />
           <p className="text-sm">
-            iOne is Cambodia's largest Apple Authorized Reseller with premium high-traffic stores in AEON Mall Phnom Penh and AEON Mall Sen Sok. We are proudly serving our customers in Cambodia since 2006. Technical support is available at our Apple Service Provider in the iOne HQ Building.
+            iOne is Cambodia's largest Apple Authorized Reseller with premium high-traffic. 
+            stores in AEON Mall Phnom Penh and AEON Mall Sen Sok. 
+            We are proudly serving our customers in Cambodia since 2006. 
+            Technical support is available at our Apple Service Provider in the iOne HQ Building.
           </p>
           <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 mt-4">
             +20 Years of Expertise
