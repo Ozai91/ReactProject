@@ -3,7 +3,9 @@ import { ArrowRight } from 'lucide-react'
 
 const DealCard = ({ discount, title, image, link }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 flex flex-col h-full transition-all duration-300 ease-in-out hover:bg-gray-50 hover:shadow-lg transform hover:-translate-y-1">
+    <div className="bg-white rounded-lg shadow-md p-6 flex flex-col h-full 
+    transition-all duration-300 ease-in-out hover:bg-gray-50 hover:shadow-lg
+     transform hover:-translate-y-1">
       {/* Image Container */}
       <div className="flex justify-center mb-6">
         <img 
