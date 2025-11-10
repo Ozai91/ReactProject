@@ -14,6 +14,7 @@ const Navbar = () => {
     { label: "iPhone", route: "/iphone", submenu: ["iPhone 16 Pro", "iPhone 16", "iPhone SE"] },
     { label: "Watch", route: "/watch", submenu: ["Apple Watch Ultra", "Apple Watch Series 10", "Apple Watch SE"] },
     { label: "About us", route: "/about", submenu: ["Our Story"] },
+    { label: "Add Product", route: "/add-product", submenu: ["Add New Product"] },
   ];
   return (
     <div>

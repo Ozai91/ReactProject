@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import iPad from "./page/iPad";
 import iPhone from "./page/iPhone";
 import Watch from "./page/Watch";
+import AddProduct from "./components/AddProduct";
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/iphone" element={<iPhone />} />
           <Route path="/watch" element={<Watch />} />
           <Route path="/about" element={<About />} />
+          <Route path="/add-product" element={<AddProduct />} />
         </Routes>
       </main>
       <footer>
