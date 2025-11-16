@@ -11,10 +11,7 @@ const Footer = () => {
         <div>
           <img src={ifive} alt="BIU" className="h-8 mb-4" />
           <p className="text-sm">
-            iOne is Cambodia's largest Apple Authorized Reseller with premium high-traffic. 
-            stores in AEON Mall Phnom Penh and AEON Mall Sen Sok. 
-            We are proudly serving our customers in Cambodia since 2006. 
-            Technical support is available at our Apple Service Provider in the iOne HQ Building.
+            iFive is a website that created by a group of four student for assignt project.
           </p>
           <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 mt-4">
             +20 Years of Expertise
@@ -25,7 +22,6 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold mb-4">Apple Products</h3>
           <ul className="space-y-2">
-            <li>Mac</li>
             <li>iPad</li>
             <li>iPhone</li>
             <li>Watch</li>
@@ -39,8 +35,6 @@ const Footer = () => {
             <li>Service Center</li>
             <li>Trade-In</li>
             <li>Easy Payment</li>
-            <li>Device Protection Plan</li>
-            <li>Workshops</li>
           </ul>
         </div>
 
@@ -48,10 +42,9 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold mb-4">Get in Touch</h3>
           <ul className="space-y-2">
-            <li>SEYHAZIN: 023 999 3181</li>
-            <li>BORAZIN: 023 999 3161</li>
-            <li>Center: 023 999 7575</li>
-            <li>information@ione2u.com</li>
+            <li>vatana smos: 023 999 999</li>
+            <li>Bora: 023 999 3161</li>
+            <li>Otmeanemailte@iloveu.com</li>
             <div className="flex space-x-4 mt-4">
               <a href="#">Facebook</a>
               <a href="#">Instagram</a>
@@ -61,7 +54,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="text-center text-gray-400 text-sm mt-8">
-        ©2006-2025 iOne Co., Ltd. All Rights Reserved | Privacy Policy
+        ©2006-2025 iFive Co., Ltd. All Rights Reserved | Privacy Policy
       </div>
     </footer>
       

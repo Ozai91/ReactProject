@@ -241,8 +241,6 @@ const Home = () => {
             </div>
         </div>
 
-        {/* Latest Products Section */}
-        <LatestProducts />
     </div>
   )
 }
