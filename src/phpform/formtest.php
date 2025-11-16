@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // File upload handling
     $image_url = '';
     if(isset($_FILES['image'])) {
-        $target_dir = "../public/uploads/";
+        $target_dir = "../../public/uploads/";
         // Create directory if it doesn't exist
         if (!file_exists($target_dir)) {
             mkdir($target_dir, 0777, true);
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
         if(in_array($fileType, $allowTypes)) {
             if(move_uploaded_file($file["tmp_name"], $targetFilePath)) {
-                $image_url = '/uploads/' . $fileName;
+                $image_url = '/Clones/ReactProject/public/uploads/' . $fileName;
             } else {
                 $response['message'] = "Sorry, there was an error uploading your file.";
                 echo json_encode($response);
