@@ -8,7 +8,6 @@ import Contact from "./page/Contact";
 import Footer from "./components/Footer";
 import IPadPage from "./page/iPad";
 import IPhonePage from "./page/iPhone";
-import Watch from "./page/Watch";
 import AddProduct from "./components/AddProduct";
 import { CartProvider } from "./context/CartContext";
 
@@ -24,7 +23,6 @@ const App = () => {
           <Route path="/mac" element={<Mac />} />
           <Route path="/ipad" element={<IPadPage />} />
           <Route path="/iphone" element={<IPhonePage />} />
-          <Route path="/watch" element={<Watch />} />
           <Route path="/about" element={<About />} />
           <Route path="/add-product" element={<AddProduct />} />
         </Routes>
