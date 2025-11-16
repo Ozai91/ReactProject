@@ -12,19 +12,19 @@ const deals = [
     discount: 25,
     title: "MacBook Air M4 15-inch",
     image: macbook,
-    link: "/gaming-deals"
+    link: "/mac"
   },
   {
     discount: 50,
     title: "Ipad",
-    image: ipad,  // Fixed: Remove the curly braces
-    link: "/laptop-deals"
+    image: ipad,
+    link: "/ipad"
   },
   {
     discount: 25,
     title: "Iphone 17 pro max",
     image: iphone,
-    link: "/electronics-deals"
+    link: "/iphone"
   }
 ];
 

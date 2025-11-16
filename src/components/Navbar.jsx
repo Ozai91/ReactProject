@@ -1,22 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Search, ShoppingCart, X, Plus, Minus } from "lucide-react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from '../context/CartContext';
 
 
 const Navbar = () => {
-  const [openMenu, setOpenMenu] = useState(null);
   const [cartOpen, setCartOpen] = useState(false);
   const { cartItems, removeFromCart, updateQuantity, getTotalItems, getTotalPrice } = useCart();
 
   const navItems = [
-    { label: "Stores", route: "/", submenu: ["Phnom Penh", "Siem Reap", "Online Store"] },
-    { label: "Mac", route: "/mac", submenu: ["MacBook Air", "MacBook Pro", "iMac", "Mac Mini"] },
-    { label: "iPad", route: "/ipad", submenu: ["iPad Pro", "iPad Air", "iPad Mini"] },
-    { label: "iPhone", route: "/iphone", submenu: ["iPhone 16 Pro", "iPhone 16", "iPhone SE"] },
-    { label: "About us", route: "/about", submenu: ["Our Story"] },
-    { label: "Add Product", route: "/add-product", submenu: ["Add New Product"] },
+    { label: "Stores", route: "/" },
+    { label: "Mac", route: "/mac" },
+    { label: "iPad", route: "/ipad" },
+    { label: "iPhone", route: "/iphone" },
+    { label: "About us", route: "/about" },
+    { label: "Add Product", route: "/add-product" },
   ];
   return (
     <div>
@@ -38,35 +36,16 @@ const Navbar = () => {
           </div>
         </Link>
 
-        {/* Middle: Nav links with dropdown */}
-        <div className="hidden md:flex items-center space-x-6 text-sm font-medium text-gray-700 relative">
+        {/* Middle: Nav links */}
+        <div className="hidden md:flex items-center space-x-6 text-sm font-medium text-gray-700">
           {navItems.map((item, idx) => (
-            <div
+            <Link 
               key={idx}
-              className="relative group"
-              onMouseEnter={() => setOpenMenu(item.label)}
-              onMouseLeave={() => setOpenMenu(null)}
+              to={item.route}
+              className="hover:text-black transition-colors duration-200"
             >
-              <Link 
-                to={item.route}
-                className="hover:text-black transition-colors duration-200"
-              >
-                {item.label}
-              </Link>
-              {openMenu === item.label && (
-                <div className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md border py-2">
-                  {item.submenu.map((sub, i) => (
-                    <Link
-                      key={i}
-                      to={item.route}
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-                    >
-                      {sub}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
+              {item.label}
+            </Link>
           ))}
         </div>
 
