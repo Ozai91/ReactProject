@@ -10,10 +10,11 @@ import iPad from "./page/iPad";
 import iPhone from "./page/iPhone";
 import Watch from "./page/Watch";
 import AddProduct from "./components/AddProduct";
+import { CartProvider } from "./context/CartContext";
 
 const App = () => {
   return (
-    <>
+    <CartProvider>
       <nav>
         <Navbar />
       </nav>
@@ -31,7 +32,7 @@ const App = () => {
       <footer>
         <Footer />
       </footer>
-    </>
+    </CartProvider>
   );
 };
 

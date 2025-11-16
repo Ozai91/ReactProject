@@ -43,32 +43,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $image_url = '/Clones/ReactProject/public/uploads/' . $fileName;
             } else {
                 $response['message'] = "Sorry, there was an error uploading your file.";
+                header('Content-Type: application/json');
                 echo json_encode($response);
                 exit;
             }
         } else {
             $response['message'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            header('Content-Type: application/json');
             echo json_encode($response);
             exit;
         }
     }
 
-    // Insert data into database
-    $sql = "INSERT INTO mac (name, price, descript, img, category, qty) 
+    // Validate category and determine table name
+    $tableName = '';
+    $categoryLower = strtolower(trim($category));
+    
+    if ($categoryLower === 'mac') {
+        $tableName = 'mac';
+    } elseif ($categoryLower === 'iphone') {
+        $tableName = 'iphone';
+    } elseif ($categoryLower === 'ipad') {
+        $tableName = 'ipad';
+    } else {
+        $response['message'] = "Invalid category. Please select mac, iphone, or ipad.";
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit;
+    }
+
+    // Insert data into the appropriate database table
+    $sql = "INSERT INTO $tableName (name, price, descript, img, category, qty) 
             VALUES ('$name', '$price', '$description', '$image_url', '$category', '$qty')";
 
     if ($conn->query($sql) === TRUE) {
         $response['success'] = true;
-        $response['message'] = "Product added successfully";
+        $response['message'] = "Product added successfully to $tableName table";
     } else {
         $response['message'] = "Error: " . $sql . "<br>" . $conn->error;
     }
 
-    // Return JSON response for API calls
-    if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-        echo json_encode($response);
-        exit;
-    }
+    // Return JSON response for API calls (React app)
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit;
 }
 
 // Close database connection

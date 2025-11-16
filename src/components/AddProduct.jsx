@@ -130,15 +130,19 @@ const AddProduct = () => {
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">
                 Category
               </label>
-              <input
-                type="text"
+              <select
                 id="category"
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
                 required
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
+              >
+                <option value="">Select a category</option>
+                <option value="mac">Mac</option>
+                <option value="iphone">iPhone</option>
+                <option value="ipad">iPad</option>
+              </select>
             </div>
 
             <div className="mb-4">
