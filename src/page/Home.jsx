@@ -144,13 +144,16 @@ const Home = () => {
                 alt="iPhone 17 Pro Max"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-10">
+              <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-10  flex flex-col items-center gap-4 mt-4">
                 <Link
                   to="/iphone"
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-300 shadow-lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-lg transition-colors duration-300 shadow-lg"
                 >
                   Buy
                 </Link>
+                 <p className="text-white text-base md:text-lg">
+                  From $1599 or $41.62/mo.
+                </p>
               </div>
             </div>
           )}
@@ -206,15 +209,15 @@ const Home = () => {
               <p className="text-xl md:text-2xl text-gray-600 mb-2 text-center">
                 The thinnest iPhone ever.
               </p>
-              <p className="text-xl md:text-2xl text-gray-600 mb-8 text-center">
+              <p className="text-xl md:text-2xl text-gray-600 mb-2 text-center">
                 With the power of pro inside.
               </p>
               
               {/* Buy Button and Pricing */}
-              <div className="flex flex-col items-center gap-4 mt-4">
+              <div className="flex flex-col items-center gap-4 mt-2">
                 <Link
                   to="/iphone"
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-12 rounded-lg text-lg transition-colors duration-300 shadow-lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-300 shadow-lg"
                 >
                   Buy
                 </Link>
@@ -227,7 +230,7 @@ const Home = () => {
    
           </div>
                    {/* Video Below Text */}
-                   <div className="relative w-full bg-white min-h-[200px] flex items-center justify-center overflow-hidden rounded-lg">
+            <div className="relative w-full bg-white min-h-[200px] flex items-center justify-center overflow-hidden rounded-lg">
               <video
                 ref={airVideoRef}
                 className="w-full h-full object-cover"
