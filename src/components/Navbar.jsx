@@ -2,11 +2,59 @@ import React, { useState } from 'react'
 import { Search, ShoppingCart, X, Plus, Minus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from '../context/CartContext';
-
+import CheckoutForm from './CheckoutForm';
+import Receipt from './Receipt';
 
 const Navbar = () => {
   const [cartOpen, setCartOpen] = useState(false);
-  const { cartItems, removeFromCart, updateQuantity, getTotalItems, getTotalPrice } = useCart();
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [receiptOpen, setReceiptOpen] = useState(false);
+  const [receiptData, setReceiptData] = useState(null);
+  const { cartItems, removeFromCart, updateQuantity, getTotalItems, getTotalPrice, clearCart } = useCart();
+
+  // Confirm handler: Calls backend PHP scripts and then shows receipt
+  const handleConfirmPurchase = async (customer) => {
+    const baseUrl = 'http://localhost/Clones/ReactProject/src/phpform/';
+    // 1. Reduce stock for each product
+    for (const item of cartItems) {
+      const res = await fetch(baseUrl + 'reduceStock.php', {
+        method: 'POST', // Changed from PUT to POST
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: item.id,
+          category: item.category || 'iphone', // fallback to iphone
+          quantity: item.quantity
+        })
+      });
+      const json = await res.json();
+      if (!json.success) {
+        alert('Failed to reduce stock for ' + item.name + ': ' + (json.error || 'Unknown error'));
+        return;
+      }
+    }
+    // 2. Record the purchase
+    const datetime = new Date().toISOString().slice(0,19).replace('T',' ');
+    const purchaseRes = await fetch(baseUrl + 'purchase.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customer,
+        products: cartItems.map(({id, name, quantity, price}) => ({id, name, quantity, price})),
+        grandTotal: getTotalPrice(),
+        datetime
+      })
+    });
+    const purchaseJson = await purchaseRes.json();
+    if (!purchaseJson.success) {
+      alert('Purchase failed: ' + (purchaseJson.error || 'Unknown error'));
+      return;
+    }
+    // 3. Show receipt
+    setReceiptData({ customer, products: [...cartItems], grandTotal: getTotalPrice(), datetime });
+    setCheckoutOpen(false);
+    clearCart();
+    setTimeout(() => setReceiptOpen(true), 200); // slight delay for smooth transition
+  };
 
   const navItems = [
     { label: "Stores", route: "/" },
@@ -164,7 +212,10 @@ const Navbar = () => {
                         <span className="font-semibold">Total:</span>
                         <span className="text-xl font-bold text-blue-600">${getTotalPrice().toFixed(2)}</span>
                       </div>
-                      <button className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                      <button
+                        className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                        onClick={() => { setCheckoutOpen(true); setCartOpen(false); }}
+                      >
                         Checkout
                       </button>
                     </div>
@@ -175,6 +226,20 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+      <CheckoutForm
+        open={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        onConfirm={handleConfirmPurchase}
+      />
+      {receiptOpen && receiptData && (
+        <Receipt
+          customer={receiptData.customer}
+          products={receiptData.products}
+          grandTotal={receiptData.grandTotal}
+          datetime={receiptData.datetime}
+          onClose={() => setReceiptOpen(false)}
+        />
+      )}
     </nav>
     
       
