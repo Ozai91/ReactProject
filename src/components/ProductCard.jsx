@@ -2,11 +2,11 @@ import React from 'react'
 import { Eye, Heart, ShoppingCart, Truck, Tag } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 
-const ProductCard = ({ id, name, price, image }) => {
+const ProductCard = ({ id, name, price, image, category }) => {
   const { addToCart } = useCart()
 
   const handleAddToCart = () => {
-    addToCart({ id, name, price, image })
+    addToCart({ id, name, price, image, category })
   }
 
   const handleView = () => {

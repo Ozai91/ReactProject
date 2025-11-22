@@ -8,7 +8,7 @@ const Mac = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost/Clones/ReactProject/src/phpform/getProducts.php?category=mac')
+        const response = await fetch('http://localhost:4000/api/products/by-category?category=mac')
         const data = await response.json()
         setProducts(data)
       } catch (error) {
@@ -52,6 +52,7 @@ const Mac = () => {
                 name={product.name}
                 price={product.price}
                 image={product.image}
+                category="mac"
               />
             ))}
           </div>

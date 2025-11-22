@@ -14,10 +14,10 @@ const Navbar = () => {
 
   // Confirm handler: Calls backend PHP scripts and then shows receipt
   const handleConfirmPurchase = async (customer) => {
-    const baseUrl = 'http://localhost/Clones/ReactProject/src/phpform/';
+    const baseUrl = 'http://localhost:4000/api/';
     // 1. Reduce stock for each product
     for (const item of cartItems) {
-      const res = await fetch(baseUrl + 'reduceStock.php', {
+      const res = await fetch(baseUrl + 'products/reduce-stock', {
         method: 'POST', // Changed from PUT to POST
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -34,7 +34,7 @@ const Navbar = () => {
     }
     // 2. Record the purchase
     const datetime = new Date().toISOString().slice(0,19).replace('T',' ');
-    const purchaseRes = await fetch(baseUrl + 'purchase.php', {
+    const purchaseRes = await fetch(baseUrl + 'purchases/record', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

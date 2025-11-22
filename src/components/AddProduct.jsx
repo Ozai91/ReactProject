@@ -35,7 +35,7 @@ const AddProduct = () => {
     }
 
     try {
-      const response = await fetch('http://localhost/Clones/ReactProject/src/phpform/formtest.php', {
+      const response = await fetch('http://localhost:4000/api/products/add', {
         method: 'POST',
         body: formDataToSend,
       });
@@ -60,6 +60,7 @@ const AddProduct = () => {
         document.getElementById('image').value = '';
       }
     } catch (error) {
+      console.error('Form submission error:', error);
       setMessage({
         text: 'Error submitting form. Please try again.',
         success: false

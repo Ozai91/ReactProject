@@ -7,7 +7,7 @@ const IPadPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost/Clones/ReactProject/src/phpform/getProducts.php?category=ipad')
+        const response = await fetch('http://localhost:4000/api/products/by-category?category=ipad')
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
@@ -80,6 +80,7 @@ const IPadPage = () => {
                   name={product.name}
                   price={product.price}
                   image={product.image}
+                  category="ipad"
                 />
               ))}
             </div>
