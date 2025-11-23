@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import IPadPage from "./page/iPad";
 import IPhonePage from "./page/iPhone";
 import AddProduct from "./components/AddProduct";
+import OrderReport from "./page/OrderReport";
 import { CartProvider } from "./context/CartContext";
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/iphone" element={<IPhonePage />} />
           <Route path="/about" element={<About />} />
           <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/order-report" element={<OrderReport />} />
         </Routes>
       </main>
       <footer>

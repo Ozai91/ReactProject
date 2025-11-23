@@ -470,6 +470,104 @@ app.post("/api/purchases/record", async (req, res) => {
   }
 });
 
+// 5. Order Report (NEW - for filtering and viewing order history)
+app.get("/api/orders/report", async (req, res) => {
+  try {
+    const { dateFrom, dateTo, customer, status } = req.query;
+
+    // Build WHERE clause dynamically
+    const where = [];
+    const args = [];
+
+    // Date range filter
+    if (dateFrom) {
+      where.push("purchase_time >= ?");
+      args.push(dateFrom);
+    }
+    if (dateTo) {
+      // Add one day to include the entire "to" date
+      const toDatePlusOne = new Date(dateTo);
+      toDatePlusOne.setDate(toDatePlusOne.getDate() + 1);
+      where.push("purchase_time < ?");
+      args.push(toDatePlusOne.toISOString().split('T')[0]);
+    }
+
+    // Customer search filter (name, phone, or email)
+    if (customer && customer.trim()) {
+      where.push("(full_name LIKE ? OR phone LIKE ? OR email LIKE ?)");
+      const searchTerm = `%${customer.trim()}%`;
+      args.push(searchTerm, searchTerm, searchTerm);
+    }
+
+    // Build query
+    const whereClause = where.length > 0 ? `WHERE ${where.join(" AND ")}` : "";
+    
+    // Get all orders matching filters
+    const [orders] = await pool.query(
+      `SELECT id, full_name, phone, email, products, grand_total, purchase_time
+       FROM purchase_history
+       ${whereClause}
+       ORDER BY purchase_time DESC`,
+      args
+    );
+
+    // Parse products JSON and calculate totals
+    const processedOrders = orders.map(order => {
+      let products = [];
+      try {
+        products = JSON.parse(order.products);
+      } catch (e) {
+        console.error('Failed to parse products for order', order.id, e);
+      }
+
+      // Calculate paid amount (for now, assume fully paid if status would be "Completed")
+      const totalAmount = parseFloat(order.grand_total) || 0;
+      const amountPaid = totalAmount; // In your simple system, orders are paid in full
+      const balanceDue = 0;
+
+      return {
+        id: order.id,
+        orderNumber: `#${order.id}`,
+        purchaseTime: order.purchase_time,
+        customer: {
+          fullName: order.full_name,
+          phone: order.phone,
+          email: order.email
+        },
+        products: products,
+        total: totalAmount,
+        amountPaid: amountPaid,
+        balanceDue: balanceDue,
+        status: balanceDue > 0 ? 'Pending' : 'Completed'
+      };
+    });
+
+    // Apply status filter if provided (after processing)
+    let filteredOrders = processedOrders;
+    if (status && status !== 'all') {
+      filteredOrders = processedOrders.filter(order => 
+        order.status.toLowerCase() === status.toLowerCase()
+      );
+    }
+
+    // Calculate summary statistics
+    const summary = {
+      totalOrders: filteredOrders.length,
+      totalAmount: filteredOrders.reduce((sum, order) => sum + order.total, 0),
+      amountPaid: filteredOrders.reduce((sum, order) => sum + order.amountPaid, 0),
+      balanceDue: filteredOrders.reduce((sum, order) => sum + order.balanceDue, 0)
+    };
+
+    res.json({
+      summary,
+      orders: filteredOrders
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Failed to fetch order report" });
+  }
+});
+
 // --- Error Handlers ---
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);
