@@ -62,8 +62,8 @@ const Navbar = () => {
     { label: "iPad", route: "/ipad" },
     { label: "iPhone", route: "/iphone" },
     { label: "About us", route: "/about" },
-    { label: "Add Product", route: "/add-product" },
     { label: "📊 Order Report", route: "/order-report" },
+    { label: "⚙️ Admin", route: "/admin" },
   ];
   return (
     <div>

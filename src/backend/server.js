@@ -16,7 +16,8 @@ app.use(express.json());
 // --- Paths ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const uploadDir = path.join(__dirname, "..", "phpform", "uploads");
+// Point to the correct uploads directory where images are actually stored
+const uploadDir = path.join(__dirname, "..", "..", "public", "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 app.use("/uploads", express.static(uploadDir));
 
@@ -376,7 +377,20 @@ app.get("/api/products/by-category", async (req, res) => {
        ORDER BY id DESC`
     );
 
-    res.json(rows);
+    // Helper function to fix image URLs
+    const fixImageUrl = (imageUrl) => {
+      if (!imageUrl || imageUrl.trim() === '') return null;
+      const filename = imageUrl.split('/').pop();
+      return `http://localhost:4000/uploads/${filename}`;
+    };
+
+    // Transform image URLs before returning
+    const fixedRows = rows.map(row => ({
+      ...row,
+      image: fixImageUrl(row.image)
+    }));
+
+    res.json(fixedRows);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Failed to fetch products" });
@@ -565,6 +579,168 @@ app.get("/api/orders/report", async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Failed to fetch order report" });
+  }
+});
+
+// 6. Update Product (for Admin page)
+app.put("/api/products/update", async (req, res) => {
+  try {
+    const { id, name, price, description, category, qty } = req.body;
+
+    // Validate required fields
+    if (!id || !category) {
+      return res.status(400).json({ error: "ID and category are required" });
+    }
+
+    // Validate category and map to table name
+    const validCategories = { mac: "mac", iphone: "iphone", ipad: "ipad" };
+    const tableName = validCategories[category.toLowerCase()];
+    if (!tableName) {
+      return res.status(400).json({ error: "Invalid category. Must be mac, iphone, or ipad" });
+    }
+
+    // Build update query dynamically
+    const updates = [];
+    const values = [];
+    
+    if (name !== undefined) { updates.push("name = ?"); values.push(name); }
+    if (price !== undefined) { updates.push("price = ?"); values.push(n(price)); }
+    if (description !== undefined) { updates.push("descript = ?"); values.push(description); }
+    if (qty !== undefined) { updates.push("qty = ?"); values.push(n(qty)); }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: "No fields to update" });
+    }
+
+    values.push(n(id));
+
+    // Update product in category-specific table
+    const [result] = await pool.query(
+      `UPDATE ${tableName} SET ${updates.join(", ")} WHERE id = ?`,
+      values
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.json({ 
+      success: true, 
+      message: "Product updated successfully"
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Failed to update product" });
+  }
+});
+
+// 7. Delete Product (for Admin page)
+app.delete("/api/products/delete", async (req, res) => {
+  try {
+    const { id, category } = req.body;
+
+    // Validate required fields
+    if (!id || !category) {
+      return res.status(400).json({ error: "ID and category are required" });
+    }
+
+    // Validate category and map to table name
+    const validCategories = { mac: "mac", iphone: "iphone", ipad: "ipad" };
+    const tableName = validCategories[category.toLowerCase()];
+    if (!tableName) {
+      return res.status(400).json({ error: "Invalid category. Must be mac, iphone, or ipad" });
+    }
+
+    // Delete product from category-specific table
+    const [result] = await pool.query(
+      `DELETE FROM ${tableName} WHERE id = ?`,
+      [n(id)]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.json({ 
+      success: true, 
+      message: "Product deleted successfully"
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Failed to delete product" });
+  }
+});
+
+// 8. Get All Products with Filters (for Admin page)
+app.get("/api/admin/products", async (req, res) => {
+  try {
+    const { name, category } = req.query;
+
+    // Helper function to fix image URLs from old PHP paths to backend URLs
+    const fixImageUrl = (imageUrl) => {
+      if (!imageUrl || imageUrl.trim() === '') return null;
+      // Extract just the filename from any URL format
+      const filename = imageUrl.split('/').pop();
+      return `http://localhost:4000/uploads/${filename}`;
+    };
+
+    // If category specified, query that table only
+    if (category && category !== 'all') {
+      const validCategories = { mac: "mac", iphone: "iphone", ipad: "ipad" };
+      const tableName = validCategories[category.toLowerCase()];
+      
+      if (!tableName) {
+        return res.status(400).json({ error: "Invalid category" });
+      }
+
+      let query = `SELECT id, name, price, descript AS description, img AS image, category, qty FROM ${tableName}`;
+      const args = [];
+
+      if (name && name.trim()) {
+        query += ` WHERE name LIKE ?`;
+        args.push(`%${name.trim()}%`);
+      }
+
+      query += ` ORDER BY id DESC`;
+
+      const [rows] = await pool.query(query, args);
+      // Transform image URLs before returning
+      const fixedRows = rows.map(row => ({
+        ...row,
+        image: fixImageUrl(row.image)
+      }));
+      return res.json(fixedRows);
+    }
+
+    // Query all tables and combine results
+    const tables = ['mac', 'iphone', 'ipad'];
+    let allProducts = [];
+
+    for (const table of tables) {
+      let query = `SELECT id, name, price, descript AS description, img AS image, category, qty FROM ${table}`;
+      const args = [];
+
+      if (name && name.trim()) {
+        query += ` WHERE name LIKE ?`;
+        args.push(`%${name.trim()}%`);
+      }
+
+      query += ` ORDER BY id DESC`;
+
+      const [rows] = await pool.query(query, args);
+      allProducts = allProducts.concat(rows);
+    }
+
+    // Transform image URLs for all products before returning
+    const fixedProducts = allProducts.map(row => ({
+      ...row,
+      image: fixImageUrl(row.image)
+    }));
+
+    res.json(fixedProducts);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Failed to fetch products" });
   }
 });
 

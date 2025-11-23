@@ -9,8 +9,8 @@ import Contact from "./page/Contact";
 import Footer from "./components/Footer";
 import IPadPage from "./page/iPad";
 import IPhonePage from "./page/iPhone";
-import AddProduct from "./components/AddProduct";
 import OrderReport from "./page/OrderReport";
+import Admin from "./page/Admin";
 import { CartProvider } from "./context/CartContext";
 
 const App = () => {
@@ -26,8 +26,8 @@ const App = () => {
           <Route path="/ipad" element={<IPadPage />} />
           <Route path="/iphone" element={<IPhonePage />} />
           <Route path="/about" element={<About />} />
-          <Route path="/add-product" element={<AddProduct />} />
           <Route path="/order-report" element={<OrderReport />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>
       <footer>
